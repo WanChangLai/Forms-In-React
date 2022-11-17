@@ -4,6 +4,7 @@ const SimpleInput = (props) => {
 
   const nameInputRef = useRef();
   const[enteredName,setEnteredName] = useState('');
+  const [enteredNameIsValid,setEnteredNameIsValid] = useState(true);
 
   const nameInputChangeHandler = event =>{
     setEnteredName(event.target.value )
@@ -14,10 +15,11 @@ const SimpleInput = (props) => {
     event.preventDefault();
 
     if (enteredName.trim() === ""){
-      //this return will not execute the console log below  
+      setEnteredNameIsValid(false);
       return;
     }
 
+    setEnteredNameIsValid(true);
     console.log(enteredName);
     const enteredValue = nameInputRef.current.value;
 
@@ -27,11 +29,15 @@ const SimpleInput = (props) => {
     setEnteredName('');
   };
 
+// change the css by assign a new class to it when error exist 
+const nameInputClasses = enteredNameIsValid ? 'form-control' : 'form-control invalid';
+
   return (
     <form onSubmit={formSubmissionHandler}>
-      <div className='form-control'>
+      <div className={nameInputClasses}>
         <label htmlFor='name'>Your Name</label>
         <input ref={nameInputRef} type='text' id='name' onChange={nameInputChangeHandler} value={enteredName}/>
+        {!enteredNameIsValid && <p className="error-text">Name must no be empty.</p>}
       </div>
       <div className="form-actions">
         <button>Submit</button>
