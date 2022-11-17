@@ -13,6 +13,11 @@ const SimpleInput = (props) => {
     //this to prevent the browser to send a http request to the server once the form is submitted
     event.preventDefault();
 
+    if (enteredName.trim() === ""){
+      //this return will not execute the console log below  
+      return;
+    }
+
     console.log(enteredName);
     const enteredValue = nameInputRef.current.value;
 
