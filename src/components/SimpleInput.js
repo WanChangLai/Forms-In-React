@@ -1,15 +1,21 @@
 import {useState} from "react";
 
+import useInput from "../hooks/use-input";
+
 const SimpleInput = (props) => {
 
-  const[enteredName,setEnteredName] = useState('');
+  const { 
+    value:enteredName, 
+    isValid:enteredNameIsValid,
+    hasError:nameInputHasError, 
+    valueChangeHandler:nameChangedHandler,
+    inputBlurHandler:nameBlurHandler,
+    reset:resetNameInput
+  } =  useInput(value => value.trim()!=='');
+
   const[enteredEmail,setEnteredEmail] = useState('');
   //this state reflect that whether the user touch the name or not
-  const [enteredNameTouched,setEnteredNameTouched] = useState(false);
   const [enteredEmailTouched,setEnteredEmailTouched] = useState(false);
-
-  const enteredNameIsValid = enteredName.trim() !=='';
-  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
 
   const enteredEmailIsValid = enteredEmail.includes('@');
   const emailInputIsInValid = !enteredEmailIsValid && enteredEmailTouched;
@@ -20,18 +26,10 @@ const SimpleInput = (props) => {
   if(enteredNameIsValid && enteredEmailIsValid){
     formIsValid = true;
   }
-  
-  const nameInputChangeHandler = event =>{
-    setEnteredName(event.target.value);
-  };
 
   const emailInputChangeHandler = event =>{
     setEnteredEmail(event.target.value);
   }
-
-  const nameInputBlurHandler = () =>{
-    setEnteredNameTouched(true);
-  };
 
   const emailInputBlurHandler = () =>{
     setEnteredEmailTouched(true);
@@ -42,7 +40,7 @@ const SimpleInput = (props) => {
     //this to prevent the browser to send a http request to the server once the form is submitted
     event.preventDefault();
 
-    setEnteredNameTouched(true);
+    
 
     if (!enteredNameIsValid){
       return;
@@ -52,15 +50,14 @@ const SimpleInput = (props) => {
     console.log(enteredEmail);
 
     //nameInputRef.current.value = "" => this is not ideal and dont manipulate the DOM
-    setEnteredName('');
-    setEnteredNameTouched(false);
+    resetNameInput();
     setEnteredEmail('');
     setEnteredEmailTouched(false);
   };
 
 
 // change the css by assign a new class to it when error exist 
-const nameInputClasses = nameInputIsInvalid 
+const nameInputClasses = nameInputHasError 
   ? 'form-control invalid' 
   : 'form-control';
 
@@ -73,13 +70,13 @@ const emailInputClasses = emailInputIsInValid
       <div className={nameInputClasses}>
         <label htmlFor='name'>Your Name</label>
         <input 
-          type='name' 
+          type='text' 
           id='name' 
-          onChange={nameInputChangeHandler}
-          onBlur={nameInputBlurHandler}
+          onChange={nameChangedHandler}
+          onBlur={nameBlurHandler}
           value={enteredName}
         />
-        {nameInputIsInvalid && (<p className="error-text">Name must no be empty.</p>)}
+        {nameInputHasError && (<p className="error-text">Name must no be empty.</p>)}
       </div>
       <div className={emailInputClasses}>
         <label htmlFor="email">Your Email</label>
