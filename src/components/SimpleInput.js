@@ -37,7 +37,6 @@ const SimpleInput = (props) => {
     console.log(enteredName);
     console.log(enteredEmail);
 
-    //nameInputRef.current.value = "" => this is not ideal and dont manipulate the DOM
     resetNameInput();
     resetEmailInput();
   };
